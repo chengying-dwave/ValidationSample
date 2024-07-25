@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReactiveUI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,8 +13,54 @@ public class ValidationUsingINotifyDataErrorInfoViewModel : ViewModelBase, INoti
     // Store Errors in a Dictionary
     private readonly Dictionary<string, List<ValidationResult>> errors = [];
 
+    private string? _email;
+
+    public ValidationUsingINotifyDataErrorInfoViewModel()
+    {
+        // Listen to changes of "ValidationUsingINotifyDataErrorInfo" and re-evaluate the validation
+        this.WhenAnyValue(x => x.Email)
+            .Subscribe(_ => ValidateEmail());
+
+        // run INotifyDataErrorInfo-validation on start-up
+        ValidateEmail();
+    }
+
+    private void ValidateEmail()
+    {
+        // first of all clear all previous errors
+        ClearErrors(nameof(Email));
+
+        // No empty string allowed
+        if (string.IsNullOrEmpty(Email))
+        {
+            AddError(nameof(Email), "This field is required");
+        }
+
+        // @-sign required
+        if (Email is null || !Email.Contains('@'))
+        {
+            AddError(nameof(Email), "Don't forget the '@'-sign");
+        }
+    }
+
+    private void ClearErrors(string v)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void AddError(string v1, string v2)
+    {
+        throw new NotImplementedException();
+    }
+
     // we have errors present if errors.Count is greater than 0
     public bool HasErrors => errors.Count > 0;
+
+    /// <summary>
+    /// A property that is validated using INotifyDataErrorInfo
+    /// </summary>
+    public string? Email
+    { get { return _email; } set { this.RaiseAndSetIfChanged(ref _email, value); } }
 
     // Implement members of INotifyDataErrorInfo
     public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
