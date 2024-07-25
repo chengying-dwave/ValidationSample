@@ -1,15 +1,16 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using ReactiveUI;
 using System.ComponentModel.DataAnnotations;
 
 namespace ValidationSample.ViewModels;
 
-public partial class ValidationUsingDataAnnotationViewModel : ObservableValidator
+public class ValidationUsingDataAnnotationViewModel : ViewModelBase
 {
+    private string? _email;
+
     /// <summary>
     /// Validation using DataAnnotation
     /// </summary>
     [Required]
     [EmailAddress]
-    [ObservableProperty]
-    private string? _email;
+    public string? Email { get => _email; set => this.RaiseAndSetIfChanged(ref _email, value); }
 }
