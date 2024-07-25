@@ -43,9 +43,25 @@ public class ValidationUsingINotifyDataErrorInfoViewModel : ViewModelBase, INoti
         }
     }
 
-    private void ClearErrors(string v)
+    /// <summary>
+    /// Clears the errors for a given property name.
+    /// </summary>
+    /// <param name="propertyName">The name of the property to clear or all properties if <see langword="null"/></param>
+    protected void ClearErrors(string? propertyName = null)
     {
-        throw new NotImplementedException();
+        // Clear entity-level errors when the target property is null or empty
+        if (string.IsNullOrEmpty(propertyName))
+        {
+            errors.Clear();
+        }
+        else
+        {
+            errors.Remove(propertyName);
+        }
+
+        // Notify that errors have changed
+        ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        this.RaisePropertyChanged(nameof(HasErrors));
     }
 
     private void AddError(string v1, string v2)
