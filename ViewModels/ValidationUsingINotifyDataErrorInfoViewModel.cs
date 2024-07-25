@@ -64,9 +64,26 @@ public class ValidationUsingINotifyDataErrorInfoViewModel : ViewModelBase, INoti
         this.RaisePropertyChanged(nameof(HasErrors));
     }
 
-    private void AddError(string v1, string v2)
+    /// <summary>
+    /// Adds a given error message for a given property name.
+    /// </summary>
+    /// <param name="propertyName">the name of the property</param>
+    /// <param name="errorMessage">the error message to show</param>
+    /// <exception cref="NotImplementedException"></exception>
+    protected void AddError(string propertyName, string errorMessage)
     {
-        throw new NotImplementedException();
+        // Add the cached errors list for later use.
+        if (!errors.TryGetValue(propertyName, out List<ValidationResult>? propertyErrors))
+        {
+            propertyErrors = new List<ValidationResult>();
+            errors.Add(propertyName, propertyErrors);
+        }
+
+        propertyErrors.Add(new ValidationResult(errorMessage));
+
+        // Notify that errors have changed
+        ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        this.RaisePropertyChanged(nameof(HasErrors));
     }
 
     // we have errors present if errors.Count is greater than 0
